@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62930ddddb6f291459f5f65b0d092c8e, type: 3}
+  m_Name: AvocadoInfo
+  m_EditorClassIdentifier: 
+  fruitType: 7
+  tier: 7
+  wholeFruitSprite: {fileID: 707755741461594751, guid: e3103073f70c4104d99b5d1b6443c954, type: 3}
+  slicedHalfSprite_A: {fileID: 0}
+  slicedHalfSprite_B: {fileID: 0}
+  mass: 1.1
+  mergeScore: 30

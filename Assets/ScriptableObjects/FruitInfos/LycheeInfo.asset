@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62930ddddb6f291459f5f65b0d092c8e, type: 3}
+  m_Name: LycheeInfo
+  m_EditorClassIdentifier: 
+  fruitType: 2
+  tier: 2
+  wholeFruitSprite: {fileID: -1304642480178693214, guid: c1a66ee0a6c83fc45b32cd46f7f611c1, type: 3}
+  slicedHalfSprite_A: {fileID: 5824946364861437452, guid: d751a38e6d1796e4ab23cb98f52fc0a5, type: 3}
+  slicedHalfSprite_B: {fileID: -2488480376805526904, guid: 2c3089f66caa65d4b8bedff63c7a8689, type: 3}
+  mass: 0.6
+  mergeScore: 7

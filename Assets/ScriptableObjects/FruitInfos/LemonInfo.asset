@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62930ddddb6f291459f5f65b0d092c8e, type: 3}
+  m_Name: LemonInfo
+  m_EditorClassIdentifier: 
+  fruitType: 4
+  tier: 4
+  wholeFruitSprite: {fileID: -7539154197035137764, guid: d306dbb8825d10149b8c86cf976dd491, type: 3}
+  slicedHalfSprite_A: {fileID: 1338948802721651859, guid: 59bd012d82d40d244b88ecdbaebd7887, type: 3}
+  slicedHalfSprite_B: {fileID: -6438393237537970596, guid: ad609025043f52a4796225d59fc074aa, type: 3}
+  mass: 0.8
+  mergeScore: 15
