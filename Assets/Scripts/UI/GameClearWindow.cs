@@ -155,9 +155,15 @@ namespace FruitMixer.UI
         /// </summary>
         private void ReturnToTitle()
         {
-            // GameManager 状態をリセット
+            if (showDebugLog)
+            {
+                Debug.Log("[GameClearWindow] シーン遷移開始");
+            }
+
+            // ✨ シーン遷移準備（GameOver誤発火防止）
             if (GameManager.Instance != null)
             {
+                GameManager.Instance.PrepareSceneTransition();
                 GameManager.Instance.ResetGame();
             }
 

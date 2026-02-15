@@ -12,6 +12,7 @@ namespace FruitMixer.Managers
         [Header("ゲーム状態")]
         private bool isGameOver = false;
         private bool isPaused = false; // ✨ 一時停止状態
+        private bool isTransitioning = false; // ✨ シーン遷移中フラグ
 
         [Header("削除カウント管理")]
         [Tooltip("ミキサー内削除可能回数（最大値）")]
@@ -66,6 +67,9 @@ namespace FruitMixer.Managers
         /// </summary>
         private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
         {
+            // ✨ シーン遷移完了 - フラグをリセット
+            isTransitioning = false;
+
             // GameSceneがロードされた時のみ処理
             if (scene.name == "GameScene")
             {
@@ -81,6 +85,13 @@ namespace FruitMixer.Managers
         public void GameOver(Sprite escapedFruitSprite = null)
         {
             if (isGameOver) return;  // 重複防止
+
+            // ✨ シーン遷移中なら無視
+            if (isTransitioning)
+            {
+                Debug.Log("[GameManager] シーン遷移中のためGameOver無視");
+                return;
+            }
 
             isGameOver = true;
             lastEscapedFruitSprite = escapedFruitSprite; // 脱出フルーツ保存
@@ -126,6 +137,7 @@ namespace FruitMixer.Managers
         {
             isGameOver = false;
             isPaused = false;
+            // isTransitioning은 リセットしない（シーン遷移完了後に自動リセット）
             currentDeleteCount = 0;
             currentScore = 0;
             durianCount = 0;
@@ -133,6 +145,23 @@ namespace FruitMixer.Managers
             Time.timeScale = 1f;
 
             Debug.Log("[GameManager] ゲーム状態リセット完了");
+        }
+
+        /// <summary>
+        /// シーン遷移準備（GameOverトリガー防止）
+        /// </summary>
+        public void PrepareSceneTransition()
+        {
+            isTransitioning = true;
+            Debug.Log("[GameManager] シーン遷移準備完了");
+        }
+
+        /// <summary>
+        /// シーン遷移中かチェック
+        /// </summary>
+        public bool IsTransitioning()
+        {
+            return isTransitioning;
         }
 
         /// <summary>

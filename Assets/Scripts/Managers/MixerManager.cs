@@ -92,6 +92,12 @@ namespace FruitMixer.Managers
             // GameManagerが破壊されている場合は無視（シーン終了時）
             if (GameManager.Instance == null) return;
 
+            // ✨ 既にゲームオーバー状態なら無視（シーン遷移中の誤検出防止）
+            if (GameManager.Instance.IsGameOver()) return;
+
+            // ✨ シーン遷移中なら無視（誤GameOver防止）
+            if (GameManager.Instance.IsTransitioning()) return;
+
             FruitData fruit = other.GetComponent<FruitData>();
             if (fruit != null)
             {
