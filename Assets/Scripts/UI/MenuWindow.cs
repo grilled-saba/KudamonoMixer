@@ -435,7 +435,7 @@ namespace FruitMixer.UI
         /// <summary>
         /// 現在開いているパネルを閉じる
         /// </summary>
-        private void CloseCurrentPanel()
+        public void CloseCurrentPanel()
         {
             CloseAllPanels();
 
