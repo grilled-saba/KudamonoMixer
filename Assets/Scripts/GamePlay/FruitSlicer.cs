@@ -29,6 +29,16 @@ namespace FruitMixer.Gameplay
         [Header("デバッグ")]
         [SerializeField] private bool showDebugRay = true;
 
+        [Header("切断力設定")]
+        [Tooltip("切断後の水平反発力")]
+        [SerializeField] private float sliceHorizontalForce = 1.5f;
+        [Tooltip("切断後の垂直反発力（乗数）")]
+        [SerializeField] private float sliceVerticalForceMultiplier = 2f;
+        [Tooltip("切断後の垂直反発力（加算）")]
+        [SerializeField] private float sliceVerticalForceBase = 1.5f;
+        [Tooltip("切断後に元の速度を維持する割合（0〜1）")]
+        [SerializeField] private float sliceVelocityRetain = 0.7f;
+
         // 内部
         private Camera mainCamera;
         private bool isSlicing = false;
@@ -319,13 +329,18 @@ namespace FruitMixer.Gameplay
 
             // 切断方向の反対に跳ね返る物理効果
             Vector2 bounceDirection = -sliceDirection.normalized;
+            //Vector2 bounceForce = new Vector2(
+            //    bounceDirection.x * 1.5f,  // 水平反発
+            //    Mathf.Abs(bounceDirection.y) * 2f + 1.5f  // 垂直は常に上向き
+            //);
+
             Vector2 bounceForce = new Vector2(
-                bounceDirection.x * 1.5f,  // 水平反発
-                Mathf.Abs(bounceDirection.y) * 2f + 1.5f  // 垂直は常に上向き
+            bounceDirection.x * sliceHorizontalForce, // 水平反発
+            Mathf.Abs(bounceDirection.y) * sliceVerticalForceMultiplier + sliceVerticalForceBase // 垂直は常に上向き
             );
 
             // Half_Aに物理力を適用
-            rbA.linearVelocity = originalVelocity * 0.7f; // 元の速度を70%に減速
+            rbA.linearVelocity = originalVelocity * sliceVelocityRetain; // 元の速度を70%に減速
             rbA.AddForce(bounceForce, ForceMode2D.Impulse); // 反発力追加
             rbA.AddTorque(Random.Range(-50f, -20f)); // 左回転
 
@@ -358,7 +373,7 @@ namespace FruitMixer.Gameplay
 
             // Half_B物理設定
             Rigidbody2D rbB = halfB.AddComponent<Rigidbody2D>();
-            rbB.linearVelocity = originalVelocity * 0.7f; // 元の速度を70%に減速
+            rbB.linearVelocity = originalVelocity * sliceVelocityRetain; // 元の速度を70%に減速
             rbB.gravityScale = rbA.gravityScale;
             rbB.mass = rbA.mass;
             rbB.AddForce(bounceForce, ForceMode2D.Impulse); // Half_Aと同じ反発力
