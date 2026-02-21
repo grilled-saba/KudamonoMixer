@@ -9,6 +9,10 @@ namespace FruitMixer.Managers
     {
         public static GameManager Instance { get; private set; }
 
+            // ==================== ゲームモード ====================
+        public enum GameMode { SinglePlay, AIBattle }
+        [SerializeField] private GameMode gameMode = GameMode.SinglePlay;
+
         [Header("ゲーム状態")]
         private bool isGameOver = false;
         private bool isPaused = false; // ✨ 一時停止状態
@@ -137,7 +141,7 @@ namespace FruitMixer.Managers
         {
             isGameOver = false;
             isPaused = false;
-            // isTransitioning은 リセットしない（シーン遷移完了後に自動リセット）
+            // isTransitioningはリセットしない（シーン遷移完了後に自動リセット）
             currentDeleteCount = 0;
             currentScore = 0;
             durianCount = 0;
@@ -280,7 +284,6 @@ namespace FruitMixer.Managers
         }
 
         // ==================== ドリアン管理 ====================
-
         /// <summary>
         /// ドリアン生成時に呼ばれる
         /// </summary>
@@ -289,11 +292,24 @@ namespace FruitMixer.Managers
             durianCount++;
             Debug.Log($"[GameManager] 🏆 ドリアン生成! 現在: {durianCount}個");
 
-            // 初めてのドリアン生成時にクリアウィンドウ表示
-            if (durianCount == 1)
+            if (gameMode == GameMode.AIBattle && durianCount >= 2)
             {
+                // AI対戦モード: ドリアン2個で勝利
+                GameWin();
+            }
+            else if (gameMode == GameMode.SinglePlay && durianCount == 1)
+            {
+                // シングルプレイモード: 初ドリアンでクリアウィンドウ表示
                 ShowClearWindow();
             }
+        }
+        /// <summary>
+        /// 勝利処理（AI対戦モード用）
+        /// </summary>
+        public void GameWin()
+        {
+            Debug.Log("[GameManager] 🏆🏆🏆 GameWin呼び出し！");
+            // TODO: FruitMixerAgentと連携予定
         }
 
         /// <summary>

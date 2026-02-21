@@ -205,5 +205,13 @@ namespace FruitMixer.Gameplay
             Vector3 screenPoint = new Vector3(screenPos.x, screenPos.y, -mainCamera.transform.position.z);
             return mainCamera.ScreenToWorldPoint(screenPoint);
         }
+
+        /// <summary>
+              /// AI用: 右クリックをシミュレート
+        /// </summary>
+        public void SimulateClick(Vector2 worldPos)
+        {
+            CheckRightClick(worldPos);
+        }
     }
 }

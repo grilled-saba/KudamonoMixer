@@ -441,5 +441,15 @@ namespace FruitMixer.Gameplay
             Vector3 screenPoint = new Vector3(screenPos.x, screenPos.y, -mainCamera.transform.position.z);
             return mainCamera.ScreenToWorldPoint(screenPoint);
         }
+
+        /// <summary>
+              /// AI用: ドラッグをシミュレート
+        /// </summary>
+        public void SimulateDrag(Vector3 worldPos)
+        {
+            Vector2 currentPos = new Vector2(worldPos.x, worldPos.y);
+            Vector2 lastPos = new Vector2(worldPos.x - 0.5f, worldPos.y);
+            DetectPenetration(lastPos, currentPos);
+        }
     }
 }

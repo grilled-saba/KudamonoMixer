@@ -129,5 +129,13 @@ namespace FruitMixer.Managers
                 return;
             }
         }
+
+        /// <summary>
+        /// ミキサー内のフルーツリストを取得（Agent観察用）
+        /// </summary>
+        public System.Collections.Generic.List<FruitData> GetFruitsInMixer()
+        {
+            return new System.Collections.Generic.List<FruitData>(fruitStayTimes.Keys);
+        }
     }
 }

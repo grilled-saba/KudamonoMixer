@@ -7182,6 +7182,9 @@ GameObject:
   - component: {fileID: 1832479590}
   - component: {fileID: 1832479591}
   - component: {fileID: 1832479592}
+  - component: {fileID: 1832479595}
+  - component: {fileID: 1832479594}
+  - component: {fileID: 1832479593}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -7278,6 +7281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97082a20809dbac449aba771ba5b8a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMode: 0
   maxDeleteCount: 3
   gameClearWindow: {fileID: 2006012388}
 --- !u!114 &1832479592
@@ -7298,6 +7302,78 @@ MonoBehaviour:
   clickRadius: 0.5
   fruitUpwardForce: 3
   showDebugLog: 1
+--- !u!114 &1832479593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832479586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  DecisionStep: 0
+  TakeActionsBetweenDecisions: 1
+--- !u!114 &1832479594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832479586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 182
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 2
+      BranchSizes: 0200000003000000
+    VectorActionSize: 
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: FruitMixer
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_DeterministicInference: 0
+  m_ObservableAttributeHandling: 0
+--- !u!114 &1832479595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832479586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f99d2d9f3df2b443aed2231d20fec2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  gameManager: {fileID: 1832479591}
+  mixerManager: {fileID: 1806248826}
+  fruitQueue: {fileID: 566604895}
+  spawner: {fileID: 1832479587}
+  slicer: {fileID: 1832479590}
+  aiCamera: {fileID: 1442639868}
+  minActionInterval: 0.2
+  maxFruitObservations: 40
+  maxBombObservations: 5
+  maxQueueObservations: 3
 --- !u!1 &1847781671
 GameObject:
   m_ObjectHideFlags: 0
