@@ -50,6 +50,18 @@ namespace FruitMixer.AI
             episodeStartTime = Time.time;
             lastActionTime = 0f;
 
+            // レイヤーでフルーツを削除
+            int fruitLayer = LayerMask.NameToLayer("Fruit");
+            int bombLayer = LayerMask.NameToLayer("Bomb");
+
+            foreach (var obj in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            {
+                if (obj.layer == fruitLayer || obj.layer == bombLayer)
+                {
+                    Destroy(obj);
+                }
+            }
+
             if (gameManager != null)
             {
                 gameManager.ResetGame();
@@ -57,6 +69,12 @@ namespace FruitMixer.AI
 
             Debug.Log("[FruitMixerAgent] エピソード開始");
         }
+
+        //private System.Collections.IEnumerator ResetScene()
+        //{
+        //    yield return null; // 1フレーム待つ
+        //    UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        //}
 
         // ==================== 観察 ====================
 
@@ -168,48 +186,48 @@ namespace FruitMixer.AI
             // APM制限
             if (Time.time - lastActionTime < minActionInterval) return;
 
-            // マウス座標変換 (Viewport → World)
-            float mouseX = actions.ContinuousActions[0];
-            float mouseY = actions.ContinuousActions[1];
-
-            Vector3 viewportPoint = new Vector3(
-                (mouseX + 1f) / 2f,
-                (mouseY + 1f) / 2f,
-                10f
-            );
+            float startX = actions.ContinuousActions[0];
+            float startY = actions.ContinuousActions[1];
+            float endX = actions.ContinuousActions[2];
+            float endY = actions.ContinuousActions[3];
 
             Camera cam = aiCamera != null ? aiCamera : Camera.main;
-            Vector3 worldPos = cam.ViewportToWorldPoint(viewportPoint);
-            worldPos.z = 0f;
 
-            // 発射ボタン
-            if (actions.DiscreteActions[0] == 1 && spawner != null)
+            Vector3 startWorldPos = cam.ViewportToWorldPoint(new Vector3(
+                (startX + 1f) / 2f, (startY + 1f) / 2f, 10f));
+            startWorldPos.z = 0f;
+
+            Vector3 endWorldPos = cam.ViewportToWorldPoint(new Vector3(
+                (endX + 1f) / 2f, (endY + 1f) / 2f, 10f));
+            endWorldPos.z = 0f;
+
+            int action = actions.DiscreteActions[0];
+
+            switch (action)
             {
-                spawner.LaunchFruits();
-                lastActionTime = Time.time;
-            }
+                case 1: // 発射
+                    if (spawner != null)
+                    {
+                        spawner.LaunchFruits();
+                        lastActionTime = Time.time;
+                    }
+                    break;
 
-            // マウスアクション
-            int mouseAction = actions.DiscreteActions[1];
+                case 2: // スライス
+                    if (slicer != null)
+                    {
+                        slicer.SimulateDrag(startWorldPos, endWorldPos);
+                        lastActionTime = Time.time;
+                    }
+                    break;
 
-            if (mouseAction == 1) // 左クリック（スライス）
-            {
-                if (IsInCameraView(worldPos) && slicer != null)
-                {
-                    slicer.SimulateDrag(worldPos);
+                case 3: // 右クリック
+                    SimulateRightClick(endWorldPos);
                     lastActionTime = Time.time;
-                }
-            }
-            else if (mouseAction == 2) // 右クリック（収集/移動）
-            {
-                if (IsInCameraView(worldPos))
-                {
-                    SimulateRightClick(worldPos);
-                    lastActionTime = Time.time;
-                }
+                    break;
             }
 
-            // 時間ペナルティ（長時間かかると不利）
+            // 時間ペナルティ
             AddReward(-0.0001f);
         }
 
@@ -220,8 +238,8 @@ namespace FruitMixer.AI
         /// </summary>
         public void RewardMerge(int tier)
         {
-            AddReward(0.01f * tier);
-            Debug.Log($"[FruitMixerAgent] 合成報酬: +{0.01f * tier} (Tier {tier})");
+            AddReward(0.1f * tier); // 0.01f → 0.1f
+            Debug.Log($"[FruitMixerAgent] 合成報酬: +{0.1f * tier} (Tier {tier})");
         }
 
         /// <summary>
@@ -266,8 +284,8 @@ namespace FruitMixer.AI
         /// </summary>
         public void PenaltyLose()
         {
-            AddReward(-5.0f);
-            Debug.Log("[FruitMixerAgent] 敗北ペナルティ: -5.0");
+            AddReward(-1.0f); // -5.0f → -1.0f
+            Debug.Log("[FruitMixerAgent] 敗北ペナルティ: -1.0");
             EndEpisode();
         }
 

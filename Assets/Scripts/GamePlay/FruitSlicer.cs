@@ -443,13 +443,13 @@ namespace FruitMixer.Gameplay
         }
 
         /// <summary>
-              /// AI用: ドラッグをシミュレート
+        /// AI用: ドラッグをシミュレート
         /// </summary>
-        public void SimulateDrag(Vector3 worldPos)
+        public void SimulateDrag(Vector3 startPos, Vector3 endPos)
         {
-            Vector2 currentPos = new Vector2(worldPos.x, worldPos.y);
-            Vector2 lastPos = new Vector2(worldPos.x - 0.5f, worldPos.y);
-            DetectPenetration(lastPos, currentPos);
+            Vector2 start = new Vector2(startPos.x, startPos.y);
+            Vector2 end = new Vector2(endPos.x, endPos.y);
+            DetectPenetration(start, end);
         }
     }
 }

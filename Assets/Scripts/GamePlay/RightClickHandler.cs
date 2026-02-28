@@ -1,4 +1,5 @@
-﻿using FruitMixer.Core;
+﻿using FruitMixer.AI;
+using FruitMixer.Core;
 using FruitMixer.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -148,6 +149,11 @@ namespace FruitMixer.Gameplay
                         Debug.Log($"[RightClick] 🎯 爆弾を回収（ミキサー外）");
                     }
                     GameManager.Instance.AddDeleteCount();
+                    FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
+                    if (agent != null)
+                    {
+                        agent.RewardBombCollected();
+                    }
                     Destroy(obj);
                 }
                 return;

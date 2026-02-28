@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using FruitMixer.AI;
 
 namespace FruitMixer.Managers
 {
@@ -84,25 +85,32 @@ namespace FruitMixer.Managers
         }
 
         /// <summary>
-        /// ゲームオーバー処理
+              /// ゲームオーバー処理
         /// </summary>
         public void GameOver(Sprite escapedFruitSprite = null)
         {
             if (isGameOver) return;  // 重複防止
-
-            // ✨ シーン遷移中なら無視
+                                     // ✨ シーン遷移中なら無視
             if (isTransitioning)
             {
                 Debug.Log("[GameManager] シーン遷移中のためGameOver無視");
                 return;
             }
-
             isGameOver = true;
+            FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
+            if (agent != null)
+            {
+                agent.PenaltyLose();
+            }
+            // ✨ AI学習中はシーン遷移しない
+            if (gameMode == GameMode.AIBattle)
+            {
+                Debug.Log("[GameManager] 💀 AI対戦モード: GameOver（シーン遷移なし）");
+                return;
+            }
             lastEscapedFruitSprite = escapedFruitSprite; // 脱出フルーツ保存
             Time.timeScale = 0f;  // ゲーム一時停止
-
             Debug.LogError("💀💀💀 GAME OVER! フルーツがミキサーから脱出しました！");
-
             // GameOverSceneへ遷移
             UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
         }
@@ -310,6 +318,12 @@ namespace FruitMixer.Managers
         {
             Debug.Log("[GameManager] 🏆🏆🏆 GameWin呼び出し！");
             // TODO: FruitMixerAgentと連携予定
+
+            FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
+            if (agent != null)
+            {
+                agent.RewardWin();
+            }
         }
 
         /// <summary>

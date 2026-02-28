@@ -1,4 +1,5 @@
-﻿using FruitMixer.Core;
+﻿using FruitMixer.AI;
+using FruitMixer.Core;
 using FruitMixer.Managers;
 using UnityEngine;
 
@@ -200,6 +201,12 @@ namespace FruitMixer.Gameplay
             int mergeScore = newTier * scoreMultiplier;
             GameManager.Instance.AddScore(mergeScore);
 
+            FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
+            if (agent != null)
+            {
+                agent.RewardMerge(newTier);
+            }
+
             if (showDebugLog)
             {
                 Debug.Log($"[FruitMerger] 💰 スコア +{mergeScore}");
@@ -215,9 +222,11 @@ namespace FruitMixer.Gameplay
             if (newTier == 10)
             {
                 Debug.Log($"[FruitMerger] 🏆🏆🏆 Durian完成！おめでとうございます！");
-
-                // GameManagerにドリアン生成を通知
                 GameManager.Instance.OnDurianCreated();
+                if (agent != null)
+                {
+                    agent.RewardDurian();
+                }
             }
 
             // ⚠️ 重要: ゲームオーバー判定を避けるため、削除前にフラグをリセット

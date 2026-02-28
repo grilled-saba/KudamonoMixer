@@ -7281,7 +7281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97082a20809dbac449aba771ba5b8a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMode: 0
+  gameMode: 1
   maxDeleteCount: 3
   gameClearWindow: {fileID: 2006012388}
 --- !u!114 &1832479592
@@ -7333,8 +7333,8 @@ MonoBehaviour:
     VectorObservationSize: 182
     NumStackedVectorObservations: 1
     m_ActionSpec:
-      m_NumContinuousActions: 2
-      BranchSizes: 0200000003000000
+      m_NumContinuousActions: 4
+      BranchSizes: 04000000
     VectorActionSize: 
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
