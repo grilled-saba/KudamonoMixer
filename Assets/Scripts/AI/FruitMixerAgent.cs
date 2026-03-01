@@ -112,6 +112,7 @@ namespace FruitMixer.AI
                 : new List<FruitData>();
 
             // X座標でソート（観察順序を安定化）
+            fruitsInMixer.RemoveAll(f => f == null);
             fruitsInMixer.Sort((a, b) =>
                 a.transform.position.x.CompareTo(b.transform.position.x));
 

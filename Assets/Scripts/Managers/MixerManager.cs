@@ -14,6 +14,10 @@ namespace FruitMixer.Managers
         [Tooltip("ミキサー内滞在時間（秒）この時間以上いたフルーツが脱出するとゲームオーバー")]
         [SerializeField] private float minimumStayTime = 0.3f;
 
+        [Header("AI対戦モード設定")]
+        [Tooltip("AIエリアで使用する場合にAIGameManagerを設定（設定するとAIGameManagerのGameOverを呼び出す）")]
+        [SerializeField] private AIGameManager aiGameManager = null;
+
         private BoxCollider2D mixerBoundary;
 
         // フルーツの滞在時間を記録
@@ -89,6 +93,40 @@ namespace FruitMixer.Managers
             // Unityエディタで停止中は無視
             if (!Application.isPlaying) return;
 
+            // AIエリアの場合はAIGameManagerを使用
+            if (aiGameManager != null)
+            {
+                if (aiGameManager.IsGameOver()) return;
+                if (aiGameManager.IsTransitioning()) return;
+
+                FruitData fruit = other.GetComponent<FruitData>();
+                if (fruit != null)
+                {
+                    fruit.isInMixer = false;
+
+                    if (fruitStayTimes.ContainsKey(fruit))
+                        fruitStayTimes.Remove(fruit);
+
+                    if (fruit.hasEverEnteredMixer)
+                    {
+                        Debug.LogError($"[MixerManager] 💀 {fruit.GetFruitType()} がAIミキサーから脱出! → GAME OVER");
+                        aiGameManager.GameOver(fruit.GetCurrentSprite());
+                    }
+                    return;
+                }
+
+                BombData bomb = other.GetComponent<BombData>();
+                if (bomb != null)
+                {
+                    bomb.isInMixer = false;
+                    if (showDebugLog)
+                        Debug.Log($"[MixerManager] 💣 爆弾がAIミキサー脱出");
+                    return;
+                }
+                return;
+            }
+
+            // プレイヤーエリアの場合はGameManager.Instanceを使用
             // GameManagerが破壊されている場合は無視（シーン終了時）
             if (GameManager.Instance == null) return;
 
@@ -98,29 +136,29 @@ namespace FruitMixer.Managers
             // ✨ シーン遷移中なら無視（誤GameOver防止）
             if (GameManager.Instance.IsTransitioning()) return;
 
-            FruitData fruit = other.GetComponent<FruitData>();
-            if (fruit != null)
+            FruitData playerFruit = other.GetComponent<FruitData>();
+            if (playerFruit != null)
             {
-                fruit.isInMixer = false;
+                playerFruit.isInMixer = false;
 
-                if (fruitStayTimes.ContainsKey(fruit))
+                if (fruitStayTimes.ContainsKey(playerFruit))
                 {
-                    fruitStayTimes.Remove(fruit);
+                    fruitStayTimes.Remove(playerFruit);
                 }
 
-                if (fruit.hasEverEnteredMixer)
+                if (playerFruit.hasEverEnteredMixer)
                 {
-                    Debug.LogError($"[MixerManager] 💀 {fruit.GetFruitType()} がミキサーから脱出! → GAME OVER");
-                    Sprite escapedSprite = fruit.GetCurrentSprite();
+                    Debug.LogError($"[MixerManager] 💀 {playerFruit.GetFruitType()} がミキサーから脱出! → GAME OVER");
+                    Sprite escapedSprite = playerFruit.GetCurrentSprite();
                     GameManager.Instance.GameOver(escapedSprite);
                 }
                 return;
             }
 
-            BombData bomb = other.GetComponent<BombData>();
-            if (bomb != null)
+            BombData playerBomb = other.GetComponent<BombData>();
+            if (playerBomb != null)
             {
-                bomb.isInMixer = false;
+                playerBomb.isInMixer = false;
 
                 if (showDebugLog)
                 {

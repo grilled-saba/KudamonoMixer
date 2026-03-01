@@ -199,7 +199,10 @@ namespace FruitMixer.Gameplay
 
             // スコア追加
             int mergeScore = newTier * scoreMultiplier;
-            GameManager.Instance.AddScore(mergeScore);
+            bool isAIArea = transform.position.x > 100f;
+            AIGameManager aiGM = isAIArea ? FindFirstObjectByType<AIGameManager>() : null;
+            if (aiGM == null)
+                GameManager.Instance.AddScore(mergeScore);
 
             FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
             if (agent != null)
@@ -222,7 +225,12 @@ namespace FruitMixer.Gameplay
             if (newTier == 10)
             {
                 Debug.Log($"[FruitMerger] 🏆🏆🏆 Durian完成！おめでとうございます！");
-                GameManager.Instance.OnDurianCreated();
+                bool isAIArea2 = transform.position.x > 100f;
+                AIGameManager aiGM2 = isAIArea2 ? FindFirstObjectByType<AIGameManager>() : null;
+                if (aiGM2 != null)
+                    aiGM2.OnDurianCreated();
+                else
+                    GameManager.Instance.OnDurianCreated();
                 if (agent != null)
                 {
                     agent.RewardDurian();

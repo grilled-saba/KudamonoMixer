@@ -10,7 +10,7 @@ namespace FruitMixer.Managers
     {
         public static GameManager Instance { get; private set; }
 
-            // ==================== ゲームモード ====================
+        // ==================== ゲームモード ====================
         public enum GameMode { SinglePlay, AIBattle }
         [SerializeField] private GameMode gameMode = GameMode.SinglePlay;
 
@@ -38,15 +38,26 @@ namespace FruitMixer.Managers
         [Tooltip("ゲームクリアウィンドウ")]
         [SerializeField] private GameObject gameClearWindow;
 
+        [Tooltip("AI対戦マネージャー（AIBattleSceneのみ使用）")]
+        [SerializeField] private AIBattleManager battleManager;
+
+        [Header("ローカルインスタンス設定")]
+        [Tooltip("AIBattleSceneのPlayerAreaで使用。チェックするとシングルトンをスキップ")]
+        [SerializeField] private bool isLocalInstance = false;
+
         void Awake()
         {
-            // シングルトンパターン
+            if (isLocalInstance)
+            {
+                // シングルトンをスキップしてInstanceを強制上書き
+                Instance = this;
+                return;
+            }
+
             if (Instance == null)
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-
-                // シーンロード時のイベント登録
                 UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             }
             else
@@ -72,40 +83,43 @@ namespace FruitMixer.Managers
         /// </summary>
         private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
         {
-            // ✨ シーン遷移完了 - フラグをリセット
             isTransitioning = false;
 
-            // GameSceneがロードされた時のみ処理
             if (scene.name == "GameScene")
             {
                 Debug.Log("[GameManager] GameSceneロード完了 - 参照を再接続");
                 ReconnectSceneReferences();
                 ResetTestFruitSpawnerCounter();
             }
+
+            else if (scene.name == "AIBattleScene")
+            {
+                // PlayerAreaのGameManagerに引き継ぎ、自身を破棄
+                Destroy(gameObject);
+            }
         }
 
         /// <summary>
-              /// ゲームオーバー処理
+        /// ゲームオーバー処理
         /// </summary>
         public void GameOver(Sprite escapedFruitSprite = null)
         {
-            if (isGameOver) return;  // 重複防止
-                                     // ✨ シーン遷移中なら無視
-            if (isTransitioning)
-            {
-                Debug.Log("[GameManager] シーン遷移中のためGameOver無視");
-                return;
-            }
+            if (isGameOver) return;  // 重複防止 シーン遷移中なら無視
+            if (isTransitioning) return;
+
             isGameOver = true;
+            isTransitioning = true;  // 同一フレームの重複呼び出しをブロック
             FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
             if (agent != null)
             {
                 agent.PenaltyLose();
             }
-            // ✨ AI学習中はシーン遷移しない
+            // AI学習中はシーン遷移しない
             if (gameMode == GameMode.AIBattle)
             {
-                Debug.Log("[GameManager] 💀 AI対戦モード: GameOver（シーン遷移なし）");
+                Debug.Log("[GameManager] 💀 AI対戦モード: プレイヤーゲームオーバー");
+                if (battleManager != null)
+                    battleManager.OnPlayerLose();
                 return;
             }
             lastEscapedFruitSprite = escapedFruitSprite; // 脱出フルーツ保存
@@ -157,6 +171,15 @@ namespace FruitMixer.Managers
             Time.timeScale = 1f;
 
             Debug.Log("[GameManager] ゲーム状態リセット完了");
+        }
+
+        /// <summary>
+        /// ゲームモードを設定する（タイトルシーンから呼び出し）
+        /// </summary>
+        public void SetGameMode(GameMode mode)
+        {
+            gameMode = mode;
+            Debug.Log($"[GameManager] ゲームモード設定: {mode}");
         }
 
         /// <summary>
@@ -247,7 +270,7 @@ namespace FruitMixer.Managers
                 }
             }
 
-            // ✨ FruitBasketUI.testFruitSpawner 再接続（非アクティブでも検索）
+            // FruitBasketUI.testFruitSpawner 再接続（非アクティブでも検索）
             UI.FruitBasketUI basketUI = FindAnyObjectByType<UI.FruitBasketUI>(FindObjectsInactive.Include);
             if (basketUI != null && testSpawner != null)
             {
@@ -255,7 +278,7 @@ namespace FruitMixer.Managers
                 Debug.Log("[GameManager] FruitBasketUI.testFruitSpawner を再接続");
             }
 
-            // ✨ LaunchButton.onClick 再接続
+            // LaunchButton.onClick 再接続
             // Canvas/BottomButtons/LaunchButton を検索
             if (canvas != null)
             {
@@ -280,7 +303,7 @@ namespace FruitMixer.Managers
         }
 
         /// <summary>
-        /// TestFruitSpawnerのカウンターをリセット
+              /// TestFruitSpawnerのカウンターをリセット
         /// </summary>
         private void ResetTestFruitSpawnerCounter()
         {
@@ -318,11 +341,14 @@ namespace FruitMixer.Managers
         {
             Debug.Log("[GameManager] 🏆🏆🏆 GameWin呼び出し！");
             // TODO: FruitMixerAgentと連携予定
-
             FruitMixerAgent agent = FindFirstObjectByType<FruitMixerAgent>();
             if (agent != null)
             {
                 agent.RewardWin();
+            }
+            if (battleManager != null)
+            {
+                battleManager.OnPlayerWin();
             }
         }
 
@@ -352,7 +378,7 @@ namespace FruitMixer.Managers
         }
 
         /// <summary>
-        /// 現在のドリアン個数を取得
+              /// 現在のドリアン個数を取得
         /// </summary>
         public int GetDurianCount()
         {
@@ -378,7 +404,7 @@ namespace FruitMixer.Managers
         }
 
         /// <summary>
-        /// ミキサー内削除時にカウントを消費
+              /// ミキサー内削除時にカウントを消費
         /// </summary>
         /// <returns>削除可能ならtrue</returns>
         public bool UseDeleteCount()
@@ -445,7 +471,7 @@ namespace FruitMixer.Managers
         // ========================================
 
         /// <summary>
-        /// ゲームを一時停止
+              /// ゲームを一時停止
         /// </summary>
         public void PauseGame()
         {
@@ -457,7 +483,7 @@ namespace FruitMixer.Managers
         }
 
         /// <summary>
-        /// ゲームを再開
+              /// ゲームを再開
         /// </summary>
         public void ResumeGame()
         {

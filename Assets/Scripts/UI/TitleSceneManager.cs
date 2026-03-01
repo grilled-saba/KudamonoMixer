@@ -16,6 +16,9 @@ namespace FruitMixer.UI
         [Tooltip("ゲーム開始ボタン")]
         [SerializeField] private Button gameStartButton;
 
+        [Tooltip("AIと対戦ボタン")]
+        [SerializeField] private Button vsAIButton;
+
         [Tooltip("音量設定ボタン")]
         [SerializeField] private Button volumeButton;
 
@@ -46,6 +49,9 @@ namespace FruitMixer.UI
             // ボタンイベント登録
             if (gameStartButton != null)
                 gameStartButton.onClick.AddListener(OnGameStartClicked);
+
+            if (vsAIButton != null)
+                vsAIButton.onClick.AddListener(OnVsAIClicked);
 
             if (volumeButton != null)
                 volumeButton.onClick.AddListener(OnVolumeClicked);
@@ -83,6 +89,9 @@ namespace FruitMixer.UI
             if (gameStartButton != null)
                 gameStartButton.onClick.RemoveListener(OnGameStartClicked);
 
+            if (vsAIButton != null)
+                vsAIButton.onClick.RemoveListener(OnVsAIClicked);
+
             if (volumeButton != null)
                 volumeButton.onClick.RemoveListener(OnVolumeClicked);
 
@@ -97,6 +106,24 @@ namespace FruitMixer.UI
         }
 
         // ==================== ボタンイベント ====================
+
+        /// <summary>
+        /// AIと対戦ボタン
+        /// </summary>
+        private void OnVsAIClicked()
+        {
+            if (showDebugLog)
+                Debug.Log("[TitleSceneManager] AI対戦モード開始");
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.PrepareSceneTransition();
+                GameManager.Instance.SetGameMode(GameManager.GameMode.AIBattle);
+                GameManager.Instance.ResetGame();
+            }
+
+            SceneManager.LoadScene("AIBattleScene");
+        }
 
         /// <summary>
         /// ゲーム開始ボタン
