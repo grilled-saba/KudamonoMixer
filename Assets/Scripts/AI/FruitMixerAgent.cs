@@ -51,21 +51,21 @@ namespace FruitMixer.AI
             lastActionTime = 0f;
 
             // レイヤーでフルーツを削除
-            int fruitLayer = LayerMask.NameToLayer("Fruit");
-            int bombLayer = LayerMask.NameToLayer("Bomb");
+            //int fruitLayer = LayerMask.NameToLayer("Fruit");
+            //int bombLayer = LayerMask.NameToLayer("Bomb");
 
-            foreach (var obj in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
-            {
-                if (obj.layer == fruitLayer || obj.layer == bombLayer)
-                {
-                    Destroy(obj);
-                }
-            }
+            //foreach (var obj in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            //{
+            //    if (obj.layer == fruitLayer || obj.layer == bombLayer)
+            //    {
+            //        Destroy(obj);
+            //    }
+            //}
 
-            if (gameManager != null)
-            {
-                gameManager.ResetGame();
-            }
+            //if (gameManager != null)
+            //{
+            //    gameManager.ResetGame();
+            //}
 
             Debug.Log("[FruitMixerAgent] エピソード開始");
         }
@@ -259,7 +259,7 @@ namespace FruitMixer.AI
         {
             AddReward(10.0f);
             Debug.Log("[FruitMixerAgent] 勝利報酬: +10.0");
-            EndEpisode();
+            //EndEpisode();
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace FruitMixer.AI
         {
             AddReward(-1.0f); // -5.0f → -1.0f
             Debug.Log("[FruitMixerAgent] 敗北ペナルティ: -1.0");
-            EndEpisode();
+            //EndEpisode();
         }
 
         // ==================== ユーティリティ ====================

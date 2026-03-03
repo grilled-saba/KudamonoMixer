@@ -5765,7 +5765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDeleteCount: 3
   gameClearWindow: {fileID: 0}
-  battleManager: {fileID: 0}
+  battleManager: {fileID: 1320643233}
   showDebugLog: 1
 --- !u!114 &1236389117
 MonoBehaviour:

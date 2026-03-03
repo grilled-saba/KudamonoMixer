@@ -45,6 +45,7 @@ namespace FruitMixer.Managers
         /// </summary>
         public void GameOver(Sprite escapedFruitSprite = null)
         {
+            Debug.Log($"[AIGameManager] GameOver呼び出し confirmed - battleManager: {battleManager}");
             if (isGameOver) return;
             if (isTransitioning) return;
 
@@ -72,6 +73,7 @@ namespace FruitMixer.Managers
         public void OnDurianCreated()
         {
             durianCount++;
+            Debug.Log($"[AIGameManager] OnDurianCreated confirmed - durianCount: {durianCount}, battleManager: {battleManager}");
 
             if (showDebugLog)
                 Debug.Log($"[AIGameManager] 🏆 ドリアン生成! 現在: {durianCount}個");
