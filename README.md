@@ -1,4 +1,4 @@
-# FruitMixer
+# KudamonoMixer
 
 フルーツをスライスして合体させ、より上位のフルーツを目指していく2Dパズルゲーム  
 Unity 6000.0.64f1 / URP / ML-Agents を使用
